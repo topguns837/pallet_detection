@@ -15,7 +15,9 @@ ament_python_install_package(${PROJECT_NAME})
 
 # Install Python executables
 install(PROGRAMS
-  scripts/image_subscriber.py
+  scripts/pallet_detection.py
+  scripts/pallet_segmentation.py
+  scripts/image_publisher.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
