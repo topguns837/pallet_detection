@@ -19,7 +19,7 @@ class ImageSubscriber(Node):
 
         self.pallet_detection_dir = self.find_package("pallet_detection")
         model_dir_path = os.path.join(self.pallet_detection_dir, "models", "yolov8")
-        weight_file = "best.onnx"
+        weight_file = "best.pt"
 
         self.model = YOLOv8()
         self.model.build_model(model_dir_path, weight_file)
@@ -33,8 +33,9 @@ class ImageSubscriber(Node):
 
     def rgb_image_callback(self, msg):
         cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+        predictions, img = self.model.get_predictions(cv_image)
+        print(predictions)
         
-
     def find_package(self, package_name):
         try:
             # Get the share directory of the specified package
