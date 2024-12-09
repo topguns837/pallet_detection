@@ -64,6 +64,9 @@
 # pytest cache
 *.pytest_cache/
 
+# __pycache__
+*/__pycache__/*
+
 # Ignore PyPi build files.
 dist/
 build/

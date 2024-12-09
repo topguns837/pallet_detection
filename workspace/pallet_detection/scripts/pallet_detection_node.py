@@ -27,13 +27,13 @@ class PalletDetection(Node):
 
         self.image_subscription = self.create_subscription(
             Image,
-            'image_rgb_topic',
+            '/zed2i/zed_node/rgb/image_rect_color',
             self.rgb_image_callback,
             1)
         
         self.depth_subscription = self.create_subscription(
             Image,
-            'image_depth_topic',
+            '/zed2i/zed_node/depth/depth_registered',
             self.depth_image_callback,
             1)
 

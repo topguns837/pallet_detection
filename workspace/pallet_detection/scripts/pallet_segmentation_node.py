@@ -25,19 +25,22 @@ class PalletSegmentation(Node):
 
         self.image_subscription = self.create_subscription(
             Image,
-            'image_rgb_topic',
+            '/zed2i/zed_node/rgb/image_rect_color',
             self.rgb_image_callback,
             1)
         
         self.depth_subscription = self.create_subscription(
             Image,
-            'image_depth_topic',
+            '/zed2i/zed_node/depth/depth_registered',
             self.depth_image_callback,
             1)
 
     def rgb_image_callback(self, msg):
         cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         self.model.infer(cv_image)
+
+    def depth_image_callback(self, msg):
+        depth_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
         
     def find_package(self, package_name):
         try:
