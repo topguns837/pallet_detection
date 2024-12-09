@@ -71,8 +71,8 @@ class YOLOv8:
                 print("[YOLOv8] Object detection failed with exception: {}".format(e))
                 raise Exception("Error performing object detection on the input image.")
 
-            output_img = self.visualize_predictions(cv_image)
-            return self.predictions, output_img
+            self.visualize_predictions(cv_image)
+            return self.predictions
 
     def visualize_predictions(self, image):
         if not hasattr(self, "predictions") or not hasattr(self, "class_list"):
@@ -104,5 +104,3 @@ class YOLOv8:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             exit()
-            
-        return image

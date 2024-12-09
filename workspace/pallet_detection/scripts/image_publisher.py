@@ -18,7 +18,7 @@ class ImagePublisherNode(Node):
         self.timer = self.create_timer(1.0, self.publish_image)
         
         # Path to the image file (modify this to your file path)
-        self.image_path = '/root/pallet_ws/src/pallet_detection/models/yolov8/pallet-storage-warehousing.jpg'
+        self.image_path = '/root/pallet_ws/src/pallet_detection/models/images/test1.jpg'
         
         if not os.path.isfile(self.image_path):
             self.get_logger().error(f"Image file {self.image_path} does not exist.")
@@ -39,6 +39,7 @@ class ImagePublisherNode(Node):
             self.get_logger().info('Publishing image...')
         else:
             self.get_logger().warn('No image to publish.')
+
 
 def main(args=None):
     rclpy.init(args=args)

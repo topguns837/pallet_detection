@@ -1,5 +1,5 @@
 ultralytics
-numpy==1.26.4
 transformers 
 datasets 
 evaluate
+numpy==1.26.4
