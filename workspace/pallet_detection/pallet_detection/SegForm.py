@@ -7,21 +7,23 @@ from transformers import AutoImageProcessor, SegformerForSemanticSegmentation
 
 
 class SegForm:
-    def __init__(self, repo_id):
+    def __init__(self):
         """
         Initialize the SegForm class for segmentation inference.
 
         Args:
             repo_id (str): The Hugging Face Hub repository ID.
         """
-        self.repo_id = repo_id
+        self.repo_id = None
         self.model = None
         self.processor = None
 
-    def load_model(self):
+    def build_model(self, repo_id):
         """
         Load the segmentation model and processor from the Hugging Face Hub.
         """
+
+        self.repo_id = repo_id
         try:
             self.processor = AutoImageProcessor.from_pretrained(self.repo_id)
             self.model = SegformerForSemanticSegmentation.from_pretrained(self.repo_id)
@@ -42,7 +44,7 @@ class SegForm:
         """
         try:
             # Convert BGR to RGB
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # Preprocess using the processor
             inputs = self.processor(images=image, return_tensors="pt")
             return inputs
@@ -70,6 +72,9 @@ class SegForm:
                 # Extract logits and apply argmax
                 logits = outputs.logits  # Shape: (batch_size, num_classes, height, width)
                 segmentation_mask = torch.argmax(logits, dim=1).squeeze(0).cpu().numpy()
+
+                self.visualize_segmentation(image, segmentation_mask)
+            
             return segmentation_mask
         except Exception as e:
             print(f"[SegForm] Error during inference: {e}")
@@ -92,8 +97,9 @@ class SegForm:
 
             # Define colors for each class (BGR format for OpenCV)
             class_colors = {
-                0: (128, 0, 128),  # Purple for class 0
-                1: (0, 0, 255)     # Red for class 1
+                0: (0, 0, 0),
+                1: (0, 0, 255), 
+                2: (0, 255, 0)
             }
 
             # Apply the color mapping
@@ -116,7 +122,7 @@ class SegForm:
 
 if __name__ == "__main__":
     # Input image
-    image_path = "/root/pallet_ws/src/pallet_detection/models/yolov8/images.jpeg"
+    image_path = "/root/pallet_ws/src/pallet_detection/models/yolov8/test4.jpg"
     image = cv2.imread(image_path)
 
     if image is None:
@@ -127,5 +133,6 @@ if __name__ == "__main__":
     repo_id = "topguns/segformer-b0-finetuned-segments-sidewalk-outputs"
     segform = SegForm(repo_id)
     segform.load_model()
+    print(f"Number of output classes: {segform.model.config.num_labels}")
     seg_mask = segform.infer(image)
     segform.visualize_segmentation(image, seg_mask)

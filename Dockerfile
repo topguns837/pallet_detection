@@ -1,6 +1,8 @@
 # ROS2 humble Base
 FROM ros:humble
 
+ARG ROS_DISTRO=humble
+
 # Prevent hash mismatch error for apt-get update
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update -y
 
@@ -34,6 +36,8 @@ RUN pip install -r /root/requirements.txt
 
 COPY workspace $WORKSPACE/src/
 
+COPY docker_scripts/run_scripts/ /root/run_scripts
+
 # Using shell to use bash commands like 'source'
 SHELL ["/bin/bash", "-c"]
 
@@ -43,9 +47,6 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
     colcon build --symlink-install
 
 WORKDIR $WORKSPACE
-
-# Use cyclone DDS by default
-# ENV RMW_IMPLEMENTATION rmw_cyclonedds_cpp
 
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /root/.bashrc && \
     echo "source $WORKSPACE/install/setup.bash" >> /root/.bashrc
