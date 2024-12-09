@@ -11,7 +11,7 @@ import os
 class ImagePublisherNode(Node):
     def __init__(self):
         super().__init__('image_publisher_node')
-        self.publisher_ = self.create_publisher(Image, 'image_rgb_topic', 10)
+        self.publisher_ = self.create_publisher(Image, '/zed2i/zed_node/rgb/image_rect_color', 10)
         self.bridge = CvBridge()
         
         # Timer to periodically call the publish_image method (e.g., 1Hz)
@@ -34,7 +34,7 @@ class ImagePublisherNode(Node):
     def publish_image(self):
         if self.image is not None:
             # Convert the image (OpenCV format) to a ROS Image message
-            ros_image = self.bridge.cv2_to_imgmsg(self.image, encoding='bgr8')
+            ros_image = self.bridge.cv2_to_imgmsg(self.image, encoding='rgb8')
             self.publisher_.publish(ros_image)
             self.get_logger().info('Publishing image...')
         else:

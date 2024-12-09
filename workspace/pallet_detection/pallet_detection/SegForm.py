@@ -2,6 +2,7 @@ import os
 import cv2
 import torch
 from torchvision import transforms
+from torch import nn
 import numpy as np
 from transformers import AutoImageProcessor, SegformerForSemanticSegmentation
 
@@ -45,6 +46,8 @@ class SegForm:
         try:
             # Convert BGR to RGB
             #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+            image = cv2.resize(image, (512, 512))
             # Preprocess using the processor
             inputs = self.processor(images=image, return_tensors="pt")
             return inputs
@@ -71,8 +74,8 @@ class SegForm:
                 outputs = self.model(**inputs)
                 # Extract logits and apply argmax
                 logits = outputs.logits  # Shape: (batch_size, num_classes, height, width)
-                segmentation_mask = torch.argmax(logits, dim=1).squeeze(0).cpu().numpy()
 
+                segmentation_mask = torch.argmax(logits, dim=1).squeeze(0).cpu().numpy()
                 self.visualize_segmentation(image, segmentation_mask)
             
             return segmentation_mask
@@ -89,6 +92,8 @@ class SegForm:
             segmentation_mask (np.ndarray): Segmentation mask as a numpy array.
         """
         try:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            
             # Resize the segmentation mask to match the original image dimensions
             segmentation_mask_resized = cv2.resize(segmentation_mask, (image.shape[1], image.shape[0]), interpolation=cv2.INTER_NEAREST)
 

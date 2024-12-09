@@ -4,8 +4,8 @@
   <name>pallet_detection</name>
   <version>0.0.0</version>
   <description>It contains nodes to perform segmentation and detection of pallets and ground from a given camera feed</description>
-  <maintainer email="arjun.k@orangewood.co">mediapipe</maintainer>
-  <license>TODO: License declaration</license>
+  <maintainer email="kharjun4@gmail.com">Arjun K Haridas</maintainer>
+  <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

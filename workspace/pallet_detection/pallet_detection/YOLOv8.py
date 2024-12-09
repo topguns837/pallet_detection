@@ -50,6 +50,7 @@ class YOLOv8:
             print("[YOLOv8] Input image is None. No predictions will be generated.")
             return None, None
         else:
+            cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
             self.frame = cv_image
             class_id = []
             confidence = []
