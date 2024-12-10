@@ -24,9 +24,10 @@ git clone git@github.com:topguns837/pallet_detection.git
 
 ### Build Docker Image 
         
-Use these commands to build the Docker image
+Use these commands to build the Docker image. The default CUDA Version is `11.8.0`
 ```bash
-docker build -t pallet_detection:latest .
+cd pallet_detection/
+docker build --build-arg cuda_version=11.8.0 -t pallet_detection:latest .
 ```
 <br>
 
