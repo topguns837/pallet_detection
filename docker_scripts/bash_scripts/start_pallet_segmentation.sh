@@ -4,7 +4,8 @@ xhost +local:root
 
 ./stop.sh
 
-docker run -t -d --privileged --net=host \
+docker run --gpus all --shm-size=1g --ulimit memlock=-1 --ulimit stack=6710886 \
+-t -d --privileged --net=host \
 --name pallet_detection \
 -v $PWD/ddsconfig.xml:/ddsconfig.xml \
 --env CYCLONEDDS_URI=/ddsconfig.xml \

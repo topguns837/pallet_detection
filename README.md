@@ -50,9 +50,7 @@ cd docker_scripts/bash_scripts
 Alternatively, to run the image_publisher script for testing follow these commands :
 
 ```bash
-cd docker_scripts/bash_scripts
-./devel.sh
-./enter_bash.sh
+docker exec -it pallet_detection bash
 ```
 This will open a bash session inside the docker container, now run the script using :
 
