@@ -3,11 +3,17 @@ import os
 from ultralytics import YOLO
 
 
+# Class to perform YOLOv8 inference
 class YOLOv8:
     def __init__(self):
-        pass
+        # Initialize variables
+        self.model = None
+        self.class_list = None
+        self.predictions = None
+        self.frame = None
 
     def build_model(self, model_dir_path, weight_file_name):
+        # Function to load model to memory
         try:
             model_path = os.path.join(model_dir_path, weight_file_name)
             self.model = YOLO(model_path)
@@ -18,6 +24,7 @@ class YOLOv8:
                             " Make sure the file exists and the format is correct.")
 
     def load_classes(self, model_dir_path):
+        # Function to load model classes/labels
         self.class_list = []
         fpath = os.path.join(model_dir_path, "classes.txt")
 
@@ -35,6 +42,7 @@ class YOLOv8:
         return self.class_list
     
     def create_predictions_list(self, class_ids, confidences, boxes):
+        # Function to structure inference results
         self.predictions = []
         for i in range(len(class_ids)):
             obj_dict = {
@@ -46,6 +54,7 @@ class YOLOv8:
             self.predictions.append(obj_dict)
 
     def get_predictions(self, cv_image):
+        # Function to perform YOLOv8 inference
         if cv_image is None:
             print("[YOLOv8] Input image is None. No predictions will be generated.")
             return None, None
@@ -76,32 +85,33 @@ class YOLOv8:
             return self.predictions
 
     def visualize_predictions(self, image):
+        # Function to visualize inference results
         if not hasattr(self, "predictions") or not hasattr(self, "class_list"):
             print("[YOLOv8] Predictions or class list is not available. Ensure detection is run first.")
             return image
 
         for pred in self.predictions:
-            x1, y1, x2, y2 = map(int, pred["box"])  # Bounding box coordinates
+            x1, y1, x2, y2 = map(int, pred["box"]) 
             class_id = int(pred["class_id"])
             confidence = pred["confidence"]
 
             label = f"{self.class_list[class_id]}: {confidence:.2f}"
-            color = (0, 255, 0)  # Green for bounding box
+            color = (0, 255, 0)  
 
-            # Draw the bounding box
+            # Draw bounding box
             cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
-
-            # Draw the label
             label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
             label_y1 = max(y1, label_size[1] + 10)
+            
+            # Add bounding box and text
             cv2.rectangle(image, (x1, label_y1 - label_size[1] - 10), 
                           (x1 + label_size[0], label_y1 + 3), color, -1)
             cv2.putText(image, label, (x1, label_y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
 
         print("[YOLOv8] Visualized predictions on the image.")
 
+        # Show inference output
         cv2.imshow("Output Image", image)
-
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             exit()

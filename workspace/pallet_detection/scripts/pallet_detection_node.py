@@ -11,20 +11,27 @@ from cv_bridge import CvBridge
 from pallet_detection.YOLOv8 import YOLOv8
 
 
+# Class to detect pallets using YOLOV8 
 class PalletDetection(Node):
     def __init__(self):
         super().__init__('image_subscriber')
 
+        # Create CV Bridge object
         self.bridge = CvBridge()
 
+        # Find location of pallet_detection package
         self.pallet_detection_dir = self.find_package("pallet_detection")
-        model_dir_path = os.path.join(self.pallet_detection_dir, "models", "yolov8")
-        weight_file = "train2.pt"
 
+        # Path to the weight file
+        model_dir_path = os.path.join(self.pallet_detection_dir, "models", "yolov8")
+        weight_file = "train3.pt"
+
+        # Load the YOLOv8 model
         self.model = YOLOv8()
         self.model.build_model(model_dir_path, weight_file)
         self.model.load_classes(model_dir_path)
 
+        # ROS 2 Subscriber for image and depth topics
         self.image_subscription = self.create_subscription(
             Image,
             '/zed2i/zed_node/rgb/image_rect_color',
@@ -38,11 +45,14 @@ class PalletDetection(Node):
             1)
 
     def rgb_image_callback(self, msg):
+        # Convert image message to numpy array
         cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+        
+        # Pallet Detection inference
         predictions = self.model.get_predictions(cv_image)
-        #print(predictions)
 
     def depth_image_callback(self, msg):
+        # Convert depth image message to numpy array
         depth_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
         
     def find_package(self, package_name):
